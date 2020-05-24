@@ -1,8 +1,8 @@
 import { canvasTest } from './canvas';
 import { initPiano } from './piano';
 import { init as init_seq } from './sequencer';
-
 import { Grid } from './grid';
+import './style.css';
 
 //canvasTest();
 initPiano();
