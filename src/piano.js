@@ -1,10 +1,6 @@
 import * as Tone from "tone";
 
-const synth = new Tone.Synth().toMaster();
-
-async function play() {
-    synth.triggerAttackRelease("C4", "2n");
-}
+var synth = null;
 
 function translateKey(key) {
     switch (key)
@@ -32,7 +28,8 @@ function endNote() {
     synth.triggerRelease();
 }
 
-document.querySelector("#playButton").addEventListener('click', play);
-
-document.querySelector("body").addEventListener("keydown", startNote);
-document.querySelector("body").addEventListener("keyup", endNote);
+export function initPiano() {
+    synth = new Tone.Synth().toMaster();
+    document.querySelector("body").addEventListener("keydown", startNote);
+    document.querySelector("body").addEventListener("keyup", endNote);
+}
