@@ -6,12 +6,13 @@ export interface GridOptions {
     cols: number;
     cellSize: number;
     padding: number;
+    onChange?: (grid: Grid) => void;
 }
 
 export class Grid {
 
     ctx: any;
-    cellStates: number[][];
+    public cellStates: number[][];
 
     constructor (private canvas: any, private opt: GridOptions) {
         this.init();
@@ -36,22 +37,22 @@ export class Grid {
     
 
     initGrid() {
-        for (var x = 0; x < this.opt.cols; x++) {
-            this.cellStates[x] = new Array(this.opt.rows);
+        for (var r = 0; r < this.opt.rows; r++) {
+            this.cellStates[r] = new Array(this.opt.cols);
         }
     }
 
     clearGrid() {
-        for (var x = 0; x < this.opt.cols; x++) {
-            for (var y = 0; y < this.opt.rows; y++) {
-                this.cellStates[x][y] = 0;
+        for (var r = 0; r < this.opt.rows; r++) {
+            for (var c = 0; c < this.opt.cols; c++) {
+                this.cellStates[r][c] = 0;
             }
         }        
     }
 
     drawGrid() {
-        var stateToStyle = (x: number, y: number) => {
-            switch (this.cellStates[x][y])
+        var stateToStyle = (r: number, c: number) => {
+            switch (this.cellStates[r][c])
             {
                 case 0: return "#aaa";
                 case 1: return "#f77";
@@ -59,12 +60,12 @@ export class Grid {
                 default: return "#000";
             }
         }
-        for (var x = 0; x < this.opt.cols; x++) {
-            for (var y = 0; y < this.opt.rows; y++) {
-                this.ctx.fillStyle = stateToStyle(x, y);
+        for (var r = 0; r < this.opt.rows; r++) {
+            for (var c = 0; c < this.opt.cols; c++) {
+                this.ctx.fillStyle = stateToStyle(r, c);
                 this.ctx.fillRect(
-                    x * this.opt.cellSize + this.opt.padding, 
-                    y * this.opt.cellSize + this.opt.padding, 
+                    c * this.opt.cellSize + this.opt.padding, 
+                    r * this.opt.cellSize + this.opt.padding, 
                     this.opt.cellSize - (2 * this.opt.padding), 
                     this.opt.cellSize - (2 * this.opt.padding));
             }
@@ -73,15 +74,22 @@ export class Grid {
 
     getCell = (x: number, y: number) => {
         return {
-            x: Math.floor(x / this.opt.cellSize),
-            y: Math.floor(y / this.opt.cellSize)
+            c: Math.floor(x / this.opt.cellSize),
+            r: Math.floor(y / this.opt.cellSize)
         }; 
     }
 
     clickHandler = (e: any) => {
-        var c = this.getCell(e.x, e.y);
-        this.cellStates[c.x][c.y] = this.cellStates[c.x][c.y] == 0 ? 1 : 0;
+        var cell = this.getCell(e.x, e.y);
+        this.cellStates[cell.r][cell.c] = this.cellStates[cell.r][cell.c] == 0 ? 1 : 0;
         this.drawGrid();
+        this.callChangeHandler();
+    }
+
+    private callChangeHandler() {
+        if (this.opt.onChange) {
+            this.opt.onChange(this);
+        }
     }
 
     // moveHandler(e: any) {
