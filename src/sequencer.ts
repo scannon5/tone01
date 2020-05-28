@@ -25,7 +25,7 @@ export class Sequencer {
         this.bassdrum.triggerAttackRelease('C2', '8n', time)
     }
     private triggerHihat = (time: any) => {
-        this.hihat.triggerAttackRelease('C2', '8n', time)
+        this.hihat.triggerAttackRelease('4n', time)
     }
 
     public update(grid: Grid) {
