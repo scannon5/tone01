@@ -6,6 +6,9 @@ export class Sequencer {
     bassdrum: any;
     hihat: any;
 
+    range1: any;
+    range1display: any;
+
     constructor() {
         this.init();
 
@@ -14,6 +17,15 @@ export class Sequencer {
         Tone.Transport.loop = true;
 
         document.querySelector("body").addEventListener("keydown", e => Tone.Transport.toggle());
+        this.range1 = document.getElementById("range1");
+        this.range1.addEventListener("input", this.range1changed);
+        this.range1display = document.getElementById("range1display");
+
+    }
+
+    private range1changed = (e: any) => {
+        this.range1display.innerHTML = this.range1.value;
+        this.hihat.envelope.attack = +this.range1.value;
     }
 
     private init() {
